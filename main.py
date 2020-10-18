@@ -8,7 +8,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 year = '2021'
 tourn_id = '521'
 tour_code = 'r'
-sims = 100
+sims = 1000
 cut_line = 70
 
 # import data
@@ -43,11 +43,12 @@ all = []
 t1 = time.time()
 
 if __name__ == '__main__':
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    with ThreadPoolExecutor() as executor:
         for iteration in range(1, (sims + 1)):
             results = []
             print('Sim Tournament:', iteration)
             all.append(executor.submit(playerRoundSim, sg, field, eloLeague, elo_collect, iteration, results))
+    print('Executing Elo')
 
 t2 = time.time()
 
@@ -61,12 +62,6 @@ df = pd.DataFrame.from_dict(updated)
 
 print((t2-t1))
 
-# write to s3
-file = 'elo'
-BUCKET_FOLDER = f'raw-data/{file}'
-writeToS3(data=df, bucket_name='golfdfs', filename='data_updated.csv',
-          bucket_folder=BUCKET_FOLDER)
-print(file, 'data upload complete')
 
 
 
