@@ -8,7 +8,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 year = '2021'
 tourn_id = '521'
 tour_code = 'r'
-sims = 1000
+sims = 50000
 cut_line = 70
 
 # import data
@@ -63,6 +63,9 @@ df = pd.DataFrame.from_dict(updated)
 print((t2-t1))
 
 
-
-
-
+# write to s3
+file = 'elo'
+BUCKET_FOLDER = f'raw-data/{file}'
+writeToS3(data=df, bucket_name='golfdfs', filename='data_updated.csv',
+          bucket_folder=BUCKET_FOLDER)
+print(file, 'data upload complete')
