@@ -74,7 +74,7 @@ def createCombos(combos, sg_sims, eloLeague, iteration):
 def trn_sim(stroke_data, player, iteration, rounds):
     df = stroke_data[stroke_data['full'] == player]
 
-    if len(df) > 32:
+    if len(df) > 99:
         mu, sigma, skew = df['sg:tot'].mean(), df['sg:tot'].std(), df['sg:tot'].skew()  # mean, standard deviation, skew per player
     else:
         mu, sigma, skew = stroke_data['sg:tot'].mean(), stroke_data['sg:tot'].std(), stroke_data['sg:tot'].skew()  # mean, standard deviation, skew of PGA Tour

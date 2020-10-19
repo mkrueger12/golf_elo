@@ -8,7 +8,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 year = '2021'
 tourn_id = '521'
 tour_code = 'r'
-sims = 50000
+sims = 41000
 cut_line = 70
 
 # import data
@@ -21,7 +21,8 @@ elo_initial = s3readcsv(bucket_name='golfdfs', bucket_folder='raw-data/elo',
 try:
     field = get_field(league='PGA', n=3)
     field = list(field['name'].unique())
-except KeyError:
+    print('FIELD FOUND')
+except:
     print('FIELD NOT AVAILABLE')
 
    # field = elo_initial.sample(n=20)
