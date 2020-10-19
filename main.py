@@ -22,8 +22,10 @@ try:
     field = get_field(league='PGA', n=3)
     field = list(field['name'].unique())
 except KeyError:
-    field = elo_initial.sample(n=20)
-    field = list(field['player'])
+    print('FIELD NOT AVAILABLE')
+
+   # field = elo_initial.sample(n=20)
+    #field = list(field['player'])
 
 # filter on tournament field
 elo_initial = elo_initial[elo_initial['player'].isin(field)]
