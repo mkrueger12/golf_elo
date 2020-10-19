@@ -5,10 +5,7 @@ from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 
 # tournament info
-year = '2021'
-tourn_id = '521'
-tour_code = 'r'
-sims = 5
+sims = 40000
 cut_line = 70
 
 # import data
