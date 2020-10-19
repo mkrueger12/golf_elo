@@ -35,7 +35,7 @@ def addPlayerToLeague(field, elo_initial, eloLeague):
             eloLeague.addPlayer(player, rating=rate.iloc[0, 0])
             print(player, rate)
         else:
-            eloLeague.addPlayer(player, rating=800)
+            eloLeague.addPlayer(player, rating=955)
             print(player, '800')
 
 
