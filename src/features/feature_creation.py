@@ -1,5 +1,4 @@
 import pandas as pd
-import dask
 from itertools import combinations
 from scipy.stats import skewnorm
 
@@ -51,27 +50,23 @@ def createCombos(combos, sg_sims, eloLeague, iteration):
     p1_score = list(sg_sims[sg_sims['name'] == p1]['sg'])
     p2_score = list(sg_sims[sg_sims['name'] == p2]['sg'])
 
-    for r in range(0, 4):
+    if p1_score > p2_score:
+        eloLeague.gameOver(winner=p1, loser=p2)
+    else:
+        eloLeague.gameOver(winner=p2, loser=p1)
 
-        if p1_score[r] > p2_score[r]:
-            eloLeague.gameOver(winner=p1, loser=p2)
-        else:
-            eloLeague.gameOver(winner=p2, loser=p1)
+    dict = {'name1': p1,
+            'elo1': eloLeague.ratingDict[p1],
+            'score1': p1_score,
+            'name2': p2,
+            'elo2': eloLeague.ratingDict[p2],
+            'score2': p2_score,
+            'sim_round': iteration}
 
-        dict = {'name1': p1,
-                'elo1': eloLeague.ratingDict[p1],
-                'score1': p1_score[r],
-                'name2': p2,
-                'elo2': eloLeague.ratingDict[p2],
-                'score2': p2_score[r],
-                'round': r,
-                'sim_round': iteration}
-
-        return dict,
+    return dict
 
 
-
-def trn_sim(stroke_data, player, iteration, rounds):
+def trn_sim(stroke_data, player, iteration):
     df = stroke_data[stroke_data['full'] == player]
 
     if len(df) > 99:
@@ -79,8 +74,8 @@ def trn_sim(stroke_data, player, iteration, rounds):
     else:
         mu, sigma, skew = stroke_data['sg:tot'].mean(), stroke_data['sg:tot'].std(), stroke_data['sg:tot'].skew()  # mean, standard deviation, skew of PGA Tour
 
-    score = skewnorm.rvs(skew, loc=mu, scale=sigma, size=rounds)
-    score = pd.DataFrame(score)
+    score = skewnorm.rvs(skew, loc=mu, scale=sigma, size=4)
+    score = pd.DataFrame([score.sum()])
     score.rename(columns={score.columns[0]: 'sg'}, inplace=True)
     score['tournament'] = iteration
     score['name'] = player
@@ -93,7 +88,7 @@ def playerRoundSim(sg, field, eloLeague, elo_collect, iteration, results):
 
     plist = []
     for player in field:
-        x = trn_sim(sg, player, iteration=iteration, rounds=4)
+        x = trn_sim(sg, player, iteration=iteration)
         results.append(x)
         plist.append(player)
 

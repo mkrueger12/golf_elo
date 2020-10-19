@@ -6,6 +6,7 @@ import requests
 from draft_kings.client import contests
 from draft_kings.data import Sport
 import boto3
+from io import StringIO
 
 
 def get_field(league, n):

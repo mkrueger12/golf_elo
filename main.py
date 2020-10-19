@@ -8,7 +8,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 year = '2021'
 tourn_id = '521'
 tour_code = 'r'
-sims = 41000
+sims = 5
 cut_line = 70
 
 # import data
@@ -24,9 +24,8 @@ try:
     print('FIELD FOUND')
 except:
     print('FIELD NOT AVAILABLE')
-
-   # field = elo_initial.sample(n=20)
-    #field = list(field['player'])
+    field = elo_initial.sample(n=20)
+    field = list(field['player'])
 
 # filter on tournament field
 elo_initial = elo_initial[elo_initial['player'].isin(field)]
@@ -35,7 +34,7 @@ sg = sg[sg['full'].isin(field)]
 # create league
 elo_players = list(elo_initial['player'].unique())
 
-eloLeague = Elo(k=32, g=1)  #.2215
+eloLeague = Elo(k=.2215, g=1)  #.2215
 
 # add players in trn to eloLeague
 addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague)
@@ -67,8 +66,8 @@ print((t2-t1))
 
 
 # write to s3
-file = 'elo'
+file = 'elo-sim'
 BUCKET_FOLDER = f'raw-data/{file}'
-writeToS3(data=df, bucket_name='golfdfs', filename='data_updated.csv',
+writeToS3(data=df, bucket_name='golfdfs', filename='data.csv',
           bucket_folder=BUCKET_FOLDER)
 print(file, 'data upload complete')
