@@ -5,8 +5,9 @@ from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 
 # tournament info
-sims = 41000
+sims = 3
 cut_line = 70
+tourn_name = 'ZOZO'
 
 # import data
 sg = sg_data(date='2017-09-01')
@@ -62,6 +63,8 @@ df = pd.DataFrame.from_dict(updated)
 print((t2-t1)/60/60)
 
 df.sort_values('elo', inplace=True, ascending=False)
+df['rank'] = df['elo'].rank(ascending=False).astype(int)
+df['tournament'] = tourn_name
 
 # write to s3
 file = 'elo-sim'
