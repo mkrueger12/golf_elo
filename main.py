@@ -5,7 +5,7 @@ from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 
 # tournament info
-sims = 40000
+sims = 3
 cut_line = 70
 
 # import data
@@ -61,6 +61,7 @@ df = pd.DataFrame.from_dict(updated)
 
 print((t2-t1))
 
+df.sort_values('elo', inplace=True, ascending=False)
 
 # write to s3
 file = 'elo-sim'
