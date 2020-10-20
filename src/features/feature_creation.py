@@ -1,6 +1,8 @@
 import pandas as pd
 from itertools import combinations
 from scipy.stats import skewnorm
+import boto3
+from io import StringIO
 
 class Elo:
 
@@ -40,7 +42,7 @@ def addPlayerToLeague(field, elo_initial, eloLeague, plist):
 
 
 
-def createCombos(combos, sg_sims, eloLeague, iteration):
+def createCombos(sg_sims, eloLeague, iteration, combos):
 
     """ Matches each combination of player and decides
         who wins the matchup """
@@ -54,16 +56,6 @@ def createCombos(combos, sg_sims, eloLeague, iteration):
         eloLeague.gameOver(winner=p1, loser=p2)
     else:
         eloLeague.gameOver(winner=p2, loser=p1)
-
-    dict = {'name1': p1,
-            'elo1': eloLeague.ratingDict[p1],
-            'score1': p1_score,
-            'name2': p2,
-            'elo2': eloLeague.ratingDict[p2],
-            'score2': p2_score,
-            'sim_round': iteration}
-
-    return dict
 
 
 def trn_sim(stroke_data, player, iteration):
@@ -82,9 +74,9 @@ def trn_sim(stroke_data, player, iteration):
     return score
 
 
-def playerRoundSim(sg, field, eloLeague, elo_collect, iteration, results):
+def playerRoundSim(sg, field, eloLeague, results, iteration):
     """ simulates each player rounds matchup and appends results to list """
-
+    print(iteration)
 
     plist = []
     for player in field:
@@ -96,9 +88,7 @@ def playerRoundSim(sg, field, eloLeague, elo_collect, iteration, results):
 
     combos = [c for c in combinations(plist, 2)]
 
-    for c in combos:
-        elo_outcome = createCombos(c, df, eloLeague, iteration)
+    cc = lambda x: createCombos(df, eloLeague, iteration, x)
 
-        elo_collect.append(elo_outcome)
+    list(map(cc, combos))
 
-    return elo_collect

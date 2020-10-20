@@ -1,11 +1,10 @@
-from futures3.thread import ThreadPoolExecutor
 import time
 import pandas as pd
 from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 
 # tournament info
-sims = 3
+sims = 40000
 cut_line = 70
 tourn_name = 'ZOZO'
 
@@ -40,15 +39,15 @@ addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague, pli
 # run simulation
 elo_collect = []
 all = []
+results = []
+
 t1 = time.time()
 
-if __name__ == '__main__':
-    with ThreadPoolExecutor() as executor:
-        for iteration in range(1, (sims + 1)):
-            results = []
-            print('Sim Tournament:', iteration)
-            all.append(executor.submit(playerRoundSim, sg, field, eloLeague, elo_collect, iteration, results))
-    print('Executing Elo')
+iter = range(1, (sims + 1))
+
+prs = lambda iter: playerRoundSim(sg, field, eloLeague, results, iter)
+
+list(map(prs, iter))
 
 t2 = time.time()
 
