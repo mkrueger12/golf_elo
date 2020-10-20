@@ -5,7 +5,7 @@ from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, playerRoundSim
 
 # tournament info
-sims = 3
+sims = 41000
 cut_line = 70
 
 # import data
@@ -34,7 +34,7 @@ elo_players = list(elo_initial['player'].unique())
 eloLeague = Elo(k=.2215, g=1)  #.2215
 
 # add players in trn to eloLeague
-addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague)
+addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague, plist=elo_players)
 
 # run simulation
 elo_collect = []
@@ -59,7 +59,7 @@ for player in field:
 
 df = pd.DataFrame.from_dict(updated)
 
-print((t2-t1))
+print((t2-t1)/60/60)
 
 df.sort_values('elo', inplace=True, ascending=False)
 

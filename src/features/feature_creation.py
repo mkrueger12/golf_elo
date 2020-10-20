@@ -24,19 +24,19 @@ class Elo:
         return 1 / ((10.0 ** (exp)) + 1)
 
 
-def addPlayerToLeague(field, elo_initial, eloLeague):
+def addPlayerToLeague(field, elo_initial, eloLeague, plist):
     """ Takes a list of players in a given tournament field
         and adds them to the eloLeague """
 
     for player in field:
 
-        if player in elo_initial:
+        if player in plist:
             rate = pd.DataFrame(elo_initial[elo_initial['player'] == player]['elo'])
             eloLeague.addPlayer(player, rating=rate.iloc[0, 0])
             print(player, rate)
         else:
             eloLeague.addPlayer(player, rating=955)
-            print(player, '800')
+            print(player, '955')
 
 
 
