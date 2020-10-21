@@ -1,6 +1,8 @@
 import pandas as pd
 from itertools import combinations
 from scipy.stats import skewnorm
+import numpy as np
+from numba import jit
 import boto3
 from io import StringIO
 
@@ -57,7 +59,7 @@ def createCombos(sg_sims, eloLeague, iteration, combos):
     else:
         eloLeague.gameOver(winner=p2, loser=p1)
 
-
+# @jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
 def trn_sim(stroke_data, player, iteration):
     df = stroke_data[stroke_data['full'] == player]
 
@@ -66,11 +68,13 @@ def trn_sim(stroke_data, player, iteration):
     else:
         mu, sigma, skew = stroke_data['sg:tot'].mean(), stroke_data['sg:tot'].std(), stroke_data['sg:tot'].skew()  # mean, standard deviation, skew of PGA Tour
 
-    score = skewnorm.rvs(skew, loc=mu, scale=sigma, size=4)
-    score = pd.DataFrame([score.sum()])
-    score.rename(columns={score.columns[0]: 'sg'}, inplace=True)
-    score['tournament'] = iteration
-    score['name'] = player
+    score = np.array([skewnorm.rvs(skew, loc=mu, scale=sigma, size=4)])
+    score = np.array([score.sum()])
+    sr = np.full((score.shape[0]), iteration)  # add sim round to nparry
+    score = np.hstack((score, sr))
+    play = np.full((score.shape[0]), player)  #add player name
+    score = np.hstack((score, play))
+    print(player, 'tournament_complete')
     return score
 
 
