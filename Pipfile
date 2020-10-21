@@ -7,7 +7,7 @@ verify_ssl = true
 pandas = "*"
 
 [packages]
-src = {editable = true, file = "file:///C:/Users/max/OneDrive/Documents/Python/elo"}
+src = {editable = true, file ='/home/ubuntu/elo'}  # "file:///C:/Users/max/OneDrive/Documents/Python/elo"
 click = "*"
 coverage = "*"
 awscli = "*"
