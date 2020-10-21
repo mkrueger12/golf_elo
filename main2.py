@@ -5,7 +5,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, createCombos, 
 from itertools import combinations
 
 # tournament info
-sims = 40000
+sims = 10
 print(sims)
 cut_line = 70
 tourn_name = 'ZOZO'
@@ -74,8 +74,6 @@ for iteration in range(1, sims+1):
 
 
 t2 = time.time()
-print((t2-t1)/60)
-
 
 updated = []
 for player in field:
@@ -84,6 +82,8 @@ for player in field:
     updated.append(dict)
 
 df = pd.DataFrame.from_dict(updated)
+
+print((t2-t1))
 
 df.sort_values('elo', inplace=True, ascending=False)
 df['rank'] = df['elo'].rank(ascending=False).astype(int)
