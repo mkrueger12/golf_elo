@@ -45,7 +45,7 @@ results = []
 
 t1 = time.time()
 
-for iteration in range(1, 10):
+for iteration in range(1, sims+1):
     print(iteration)
     plist = []
     for player in field:
