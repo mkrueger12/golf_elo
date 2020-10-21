@@ -5,7 +5,8 @@ from src.features.feature_creation import Elo, addPlayerToLeague, createCombos, 
 from itertools import combinations
 
 # tournament info
-sims = 5
+sims = 40000
+print(sims)
 cut_line = 70
 tourn_name = 'ZOZO'
 
@@ -59,21 +60,18 @@ for iteration in range(1, 10):
     #df = pd.concat(results)
 
     combos = [c for c in combinations(plist, 2)]
-    print('combos done')
 
     for c in combos:
         p1 = c[0]
         p2 = c[1]
         p1_score = list(df[df['name'] == p1]['sg'])
         p2_score = list(df[df['name'] == p2]['sg'])
-        print('filter complete')
 
         if p1_score > p2_score:
             eloLeague.gameOver(winner=p1, loser=p2)
-            print(p1)
         else:
             eloLeague.gameOver(winner=p2, loser=p1)
-            print(p2)
+
 
 t2 = time.time()
 print((t2-t1)/60)

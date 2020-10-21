@@ -74,7 +74,6 @@ def trn_sim(stroke_data, player, iteration):
     score = np.hstack((score, sr))
     play = np.full((score.shape[0]), player)  #add player name
     score = np.hstack((score, play))
-    print(player, 'tournament_complete')
     return score
 
 
