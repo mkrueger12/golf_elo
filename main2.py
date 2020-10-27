@@ -6,7 +6,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, createCombos, 
 from itertools import combinations
 
 # tournament info
-sims = 10
+sims = 40000
 print(sims)
 cut_line = 70
 tourn_name = 'The Bermuda Championship'
