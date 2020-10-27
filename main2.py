@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+import numpy as np
 from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
 from src.features.feature_creation import Elo, addPlayerToLeague, createCombos, trn_sim
 from itertools import combinations
@@ -8,13 +9,13 @@ from itertools import combinations
 sims = 10
 print(sims)
 cut_line = 70
-tourn_name = 'ZOZO'
+tourn_name = 'The Bermuda Championship'
 
 # import data
 sg = sg_data(date='2017-09-01')
 
 elo_initial = s3readcsv(bucket_name='golfdfs', bucket_folder='raw-data/elo',
-                 filename='data_initial.csv')
+                        filename='data_initial.csv')
 
 # download tournament field
 try:
@@ -39,33 +40,30 @@ eloLeague = Elo(k=.2215, g=1)  #.2215
 addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague, plist=elo_players)
 
 # run simulation
-elo_collect = []
-all = []
-results = []
-
 t1 = time.time()
+
+combos = [c for c in combinations(field, 2)]
+
+ran = range(0, len(combos))
 
 for iteration in range(1, sims+1):
     print(iteration)
-    plist = []
+    results = []
     for player in field:
         x = trn_sim(sg, player, iteration=iteration)
         results.append(x)
-        plist.append(player)
 
     # create df out of np list
     names = ['sg', 'tournament', 'name', 'name1']
     df = pd.DataFrame(data=results, columns=names)
-    df = df[['sg', 'name', 'tournament']]
-    #df = pd.concat(results)
+    df = df[['sg', 'name']]
+    array = np.array(df)
 
-    combos = [c for c in combinations(plist, 2)]
-
-    for c in combos:
-        p1 = c[0]
-        p2 = c[1]
-        p1_score = list(df[df['name'] == p1]['sg'])
-        p2_score = list(df[df['name'] == p2]['sg'])
+    for i in ran:
+        p1 = combos[i][0]
+        p2 = combos[i][1]
+        p1_score = array[array[:, 1] == p1][0][0]
+        p2_score = array[array[:, 1] == p2][0][0]
 
         if p1_score > p2_score:
             eloLeague.gameOver(winner=p1, loser=p2)
