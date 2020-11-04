@@ -2,14 +2,14 @@ import time
 import pandas as pd
 import numpy as np
 from src.data.data_collection import s3readcsv, get_field, sg_data, writeToS3
-from src.features.feature_creation import Elo, addPlayerToLeague, createCombos, trn_sim
+from src.features.feature_creation import Elo, addPlayerToLeague, trn_sim
 from itertools import combinations
 
 # tournament info
 sims = 40000
 print(sims)
-cut_line = 70
-tourn_name = 'The Bermuda Championship'
+cut_line = 65
+tourn_name = 'The Vivint Houston Open'
 
 # import data
 sg = sg_data(date='2017-09-01')
@@ -19,7 +19,7 @@ elo_initial = s3readcsv(bucket_name='golfdfs', bucket_folder='raw-data/elo',
 
 # download tournament field
 try:
-    field = get_field(league='PGA', n=3)
+    field = get_field(league='PGA', n=50)
     field = list(field['name'].unique())
     print('FIELD FOUND')
 except:
