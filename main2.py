@@ -6,10 +6,10 @@ from src.features.feature_creation import Elo, addPlayerToLeague, trn_sim
 from itertools import combinations
 
 # tournament info
-sims = 40000
+sims = 80000
 print(sims)
 cut_line = 65
-tourn_name = 'The Vivint Houston Open'
+tourn_name = 'RSM'
 
 # import data
 sg = sg_data(date='2017-09-01')
@@ -19,7 +19,7 @@ elo_initial = s3readcsv(bucket_name='golfdfs', bucket_folder='raw-data/elo',
 
 # download tournament field
 try:
-    field = get_field(league='PGA', n=50)
+    field = get_field(league='PGA', n=2)
     field = list(field['name'].unique())
     print('FIELD FOUND')
 except:
@@ -34,7 +34,7 @@ sg = sg[sg['full'].isin(field)]
 # create league
 elo_players = list(elo_initial['player'].unique())
 
-eloLeague = Elo(k=.2215, g=1)  #.2215
+eloLeague = Elo(k=.5, g=1)  #.2215
 
 # add players in trn to eloLeague
 addPlayerToLeague(field=field, elo_initial=elo_initial, eloLeague=eloLeague, plist=elo_players)
