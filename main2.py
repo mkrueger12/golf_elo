@@ -6,10 +6,10 @@ from src.features.feature_creation import Elo, addPlayerToLeague, trn_sim
 from itertools import combinations
 
 # tournament info
-sims = 100000
+sims = 40000
 print(sims)
 cut_line = 65
-tourn_name = 'RSM'
+tourn_name = 'FarmInsur'
 
 # import data
 sg = sg_data(date='2017-09-01')
@@ -29,7 +29,14 @@ except:
 
 # filter on tournament field
 elo_initial = elo_initial[elo_initial['player'].isin(field)]
+diff = set(field) ^ set(list(elo_initial['player']))
 sg = sg[sg['full'].isin(field)]
+
+# add missing players to sg dataset
+missing = pd.DataFrame(columns=sg.columns)
+missing['full'] = list(diff)
+missing.fillna(0, inplace=True)
+sg = pd.concat([sg, missing])
 
 # create league
 elo_players = list(elo_initial['player'].unique())
