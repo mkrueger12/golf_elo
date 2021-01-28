@@ -6,7 +6,7 @@ from src.features.feature_creation import Elo, addPlayerToLeague, trn_sim
 from itertools import combinations
 
 # tournament info
-sims = 80000
+sims = 100000
 print(sims)
 cut_line = 65
 tourn_name = 'RSM'
