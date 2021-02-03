@@ -9,7 +9,7 @@ from itertools import combinations
 sims = 40000
 print(sims)
 cut_line = 65
-tourn_name = 'FarmInsur'
+tourn_name = 'Waste Management'
 
 # import data
 sg = sg_data(date='2017-09-01')
@@ -53,6 +53,8 @@ combos = [c for c in combinations(field, 2)]
 
 ran = range(0, len(combos))
 
+agg_df = pd.DataFrame()
+n = 0
 for iteration in range(1, sims+1):
     print(iteration)
     results = []
@@ -77,22 +79,40 @@ for iteration in range(1, sims+1):
         else:
             eloLeague.gameOver(winner=p2, loser=p1)
 
+    updated = []
+    for player in field:
+        dict = {'player': player,
+                'elo': eloLeague.ratingDict[player]}
+        updated.append(dict)
 
+    df = pd.DataFrame.from_dict(updated)
+    df.sort_values('elo', inplace=True, ascending=False)
+    df['rank'] = df['elo'].rank(ascending=False).astype(int)
+    df = df[['player', 'rank']]
+    df['t10'] = np.where(df['rank'] <= 10, 1, 0)
+    df['made_cut'] = np.where(df['rank'] <= cut_line, 1, 0)
+
+    # append to agg_df
+    agg_df = pd.concat([agg_df, df])
+
+    n += 1
+
+    if n < 101:
+        pass
+    else:
+        print('aggregate')
+        n = 0
+        agg_df = agg_df.groupby(['player']).sum().reset_index()
+
+agg_df = agg_df.groupby(['player']).sum().reset_index()
 t2 = time.time()
-
-updated = []
-for player in field:
-    dict = {'player': player,
-            'elo': eloLeague.ratingDict[player]}
-    updated.append(dict)
-
-df = pd.DataFrame.from_dict(updated)
-
 print((t2-t1))
 
-df.sort_values('elo', inplace=True, ascending=False)
-df['rank'] = df['elo'].rank(ascending=False).astype(int)
-df['tournament'] = tourn_name
+# add percentages
+
+agg_df['rank'] = agg_df['rank']/sims
+agg_df['t10'] = agg_df['t10']/sims
+agg_df['made_cut'] = agg_df['made_cut']/sims
 
 # write to s3
 file = 'elo-sim'
